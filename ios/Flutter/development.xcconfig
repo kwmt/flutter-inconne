@@ -1,0 +1,10 @@
+//
+//  development.xcconfig
+//  Runner
+//
+//  Created by Yasutaka Kawamoto on 2018/08/09.
+//  Copyright © 2018 The Chromium Authors. All rights reserved.
+//
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET=lib/main_development.dart

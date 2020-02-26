@@ -1,0 +1,71 @@
+# vim: syntax=ruby
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Description of what the lane does"
+  lane :custom_lane do
+    build_ios_app
+    # add actions here: https://docs.fastlane.tools/actions
+  end
+end
+
+lane :beta do
+  sync_code_signing(type: "appstore")    # see code signing guide for more information
+  #build_app(scheme: "Runner")
+  build_app(scheme: "development")
+  upload_to_testflight
+  slack(message: "Successfully distributed a new beta build")
+end
+
+lane :prod do
+  sync_code_signing(type: "appstore")    # see code signing guide for more information
+  build_app(scheme: "Runner")
+  upload_to_testflight
+  slack(message: "Successfully distributed a new beta build", slack_url: ENV["SLACK_HOOK_URL"])
+end
+
+lane :deploy do
+  upload_to_testflight(
+    username: ENV["APPLE_ID"],
+    app_identifier: "com.instantonnection.app",
+    itc_provider: ENV["APPSTORE_ITC_PROVIDER"]
+  )
+end
+
+
+desc "Upload to DeployGate"
+lane :dg do
+  gym(export_method: 'ad-hoc', scheme: 'Runner')
+  upload_to_deploygate(release_note: "ldpiサイズでチュートリアルから進めなくなっていたのを修正")
+end
+
+# ローカルマシーンからDeployGateにアップロードする際に使う
+desc "Upload to DeployGate from local machine"
+lane :dg_local do
+  upload_to_deploygate(release_note: "ldpiサイズでチュートリアルから進めなくなっていたのを修正")
+end
+
+private_lane :upload_to_deploygate do |params|
+  releaseNote = params[:release_note]
+  deploygate(
+    ipa: 'Runner.ipa',
+    message: releaseNote,
+    release_note: releaseNote,
+    distribution_key: ENV["DEPLOYGATE_DISTRIBUTION_KEY_FOR_IOS"],
+  )
+end

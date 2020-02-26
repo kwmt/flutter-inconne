@@ -1,0 +1,4 @@
+CFBundleBundleName = "[dev]Inconne";
+CFBundleDisplayName = "[dev]Inconne";
+NSCameraUsageDescription = "Used to set icons and send to chat room or to read a QR code.";
+NSPhotoLibraryUsageDescription = "Used to set icons and send to chat room.";

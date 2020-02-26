@@ -1,0 +1,4 @@
+CFBundleBundleName = "[開発]インコネ";
+CFBundleDisplayName = "[開発]インコネ";
+NSCameraUsageDescription = "アイコンを設定したり、チャットに送信するため、あるいはQRコードを読み取るために使われます。";
+NSPhotoLibraryUsageDescription = "アイコンを設定したり、チャットに送信するために使われます。";

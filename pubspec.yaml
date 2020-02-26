@@ -1,0 +1,165 @@
+name: instantonnection
+description: A new Flutter application.
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  intl:
+  intl_translation:
+
+  # firebase
+  firebase_core: 0.4.4
+  google_sign_in: 4.1.1
+  firebase_auth: 0.15.4
+  cloud_firestore: 0.13.2+1
+  firebase_messaging: 6.0.9
+  flutter_facebook_login: ^3.0.0
+  firebase_storage: 3.1.1
+  firebase_analytics: 5.0.11
+  firebase_admob: 0.9.0+10
+  firebase_ml_vision: 0.9.3+5
+
+  flutter_crashlytics: ^1.0.0
+
+  # DI
+  # https://pub.dartlang.org/packages/flutter_simple_dependency_injection
+  flutter_simple_dependency_injection: ^1.0.0
+
+  # 更新が2016年で止まってるのと、daggerみたいにややこしいので、使わない
+  # inject: 0.2.1
+
+
+  http: ^0.12.0
+
+  json_annotation: ^2.0.0
+
+
+  image_picker: 0.6.3+4
+
+  # Image.decodeがめちゃくちゃ時間(4分とか)かかるため、flutter_native_imageに変更
+#  image: ^2.0.4
+
+  flutter_native_image: ^0.0.5+2
+
+  # https://github.com/renancaraujo/photo_view
+  photo_view: ^0.4.2
+
+  # https://pub.dartlang.org/packages/cached_network_image
+  cached_network_image: 2.0.0
+
+  #画像のサイズ内で拡大していて、イメージとは違うので使わない。
+  #scalable_image: ^1.1.1
+
+  # qr
+#  qr_reader: ^0.1.3
+#  qr_reqderがAndroidManifestを触らなくていいので楽なんですが、iOSで撮影領域が狭いのでそれはそれで微妙
+#  barcode_scanも枠だけ先に表示されてしまい、挙動がなんか変。
+#  qr_readerの枠が全画面になってくれたらqr_readerに乗り換えたい
+# https://pub.dartlang.org/packages/barcode_scan
+  # Dart2対応で自リポジトリ参照
+  barcode_scan: ^1.0.0
+
+  qr_flutter: 2.0.0+51 # QRコード生成
+
+  #
+  #qrcode_reader: ^0.3.3
+
+
+  uuid: ^2.0.1
+
+  font_awesome_flutter: ^8.2.0
+  flutter_slidable: ^0.4.9
+
+  modal_progress_hud: ^0.1.2
+
+  # https://pub.dartlang.org/packages/url_launcher
+  url_launcher: ^5.0.2
+
+  # iap
+  flutter_inapp_purchase: 1.0.1
+
+  # https://pub.dartlang.org/packages/package_info
+  package_info: ^0.3.2
+
+  # https://pub.dartlang.org/packages/shared_preferences
+  shared_preferences: ^0.4.3
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
+
+  sliver_fab: ^1.0.0
+
+  # For test
+  ## https://pub.dartlang.org/packages/mockito
+  mockito: ^4.0.0
+
+dependency_overrides:
+  http: ^0.12.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+#  flutter_driver:
+#    sdk: flutter
+  build_runner: ^1.1.2
+  json_serializable: ^2.0.0
+
+
+  # Dart2に対応してないエラーが出る。また、アプリビルドには必要ないので、コメントアウト。
+  # TODO: Dart2に対応したコメントアウトを外したい。
+  # https://pub.dartlang.org/packages/flutter_launcher_icons
+#  flutter_launcher_icons: "^0.6.0"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/launcher-icons/icon-1024x1024.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/launcher-icons/icon-1024x1024.png"
+
+# For information on the generic Dart part of this file, see the
+# following page: https://www.dartlang.org/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/facebook.png
+    - assets/images/google.png
+    - assets/images/tutorial/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.io/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.io/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.io/custom-fonts/#from-packages

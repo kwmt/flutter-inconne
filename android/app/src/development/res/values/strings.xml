@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">[開発]インコネ</string>
+    <string name="facebook_app_id">584793821918344</string>
+    <string name="fb_login_protocol_scheme">fb584793821918344</string>
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+</resources>

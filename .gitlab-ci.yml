@@ -1,0 +1,87 @@
+image: cirrusci/flutter:latest
+
+variables:
+  GRADLE_OPTS: "-Xmx2g -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+  DOCKER_TLS_CERTDIR: "" #https://gitlab.com/gitlab-org/gitlab-foss/issues/64959#note_194582424
+
+#cache:
+#  paths:
+#    - ~/.pub-cache
+
+stages:
+  - setup
+  - build_test
+  - test
+  - deploy
+  - deploy_store
+
+setup:
+  stage: setup
+  script:
+    - flutter doctor
+
+build:
+  stage: build_test
+  script:
+    - flutter build apk -t lib/application/main_production.dart --release --flavor production
+  before_script:
+    # intl_message.arb生成
+    - flutter pub get
+    - flutter pub pub run intl_translation:extract_to_arb --output-dir=lib/l10n lib/l10n/strings.dart
+    - flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/l10n/strings.dart lib/l10n/intl_messages.arb lib/l10n/intl_ja.arb
+    # json パース用ファイル生成
+    # https://github.com/dart-lang/json_serializable/tree/master/example
+    - flutter pub pub run build_runner build
+    - dart tool/env.dart
+  artifacts:
+    paths:
+    - build/app/outputs/apk
+
+test:
+  stage: build_test
+  script:
+    - flutter test
+  before_script:
+    # intl_message.arb生成
+    - flutter pub get
+    - flutter pub pub run intl_translation:extract_to_arb --output-dir=lib/l10n lib/l10n/strings.dart
+    - flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/l10n/strings.dart lib/l10n/intl_messages.arb lib/l10n/intl_ja.arb
+    # json パース用ファイル生成
+    # https://github.com/dart-lang/json_serializable/tree/master/example
+    - flutter pub pub run build_runner build
+    - dart tool/env.dart
+
+deploy_production:
+  stage: deploy
+  environment: Production
+  only:
+    - master
+  before_script:
+    - flutter pub get
+    - flutter pub pub run intl_translation:extract_to_arb --output-dir=lib/l10n lib/l10n/strings.dart
+    - flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/l10n/strings.dart lib/l10n/intl_messages.arb lib/l10n/intl_ja.arb
+    # json パース用ファイル生成
+    # https://github.com/dart-lang/json_serializable/tree/master/example
+    - flutter pub pub run build_runner build
+    - dart tool/env.dart
+    - flutter build apk -t lib/application/main_production.dart --release --flavor production
+  script:
+    - cd android && bundle exec fastlane dg
+
+deploy_store:
+  stage: deploy
+  environment: Production
+  only:
+    - release
+  before_script:
+    - flutter pub get
+    - flutter pub pub run intl_translation:extract_to_arb --output-dir=lib/l10n lib/l10n/strings.dart
+    - flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/l10n/strings.dart lib/l10n/intl_messages.arb lib/l10n/intl_ja.arb
+    # json パース用ファイル生成
+    # https://github.com/dart-lang/json_serializable/tree/master/example
+    - flutter pub pub run build_runner build
+    - dart tool/env.dart
+    - flutter build apk -t lib/application/main_production.dart --release --flavor production
+  script:
+    - cd android && bundle exec fastlane beta
+

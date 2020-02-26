@@ -1,0 +1,101 @@
+---
+format_version: '5'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: other
+trigger_map:
+- push_branch: master
+  workflow: deploy
+- pull_request_target_branch: master
+  workflow: primary
+workflows:
+  install_flutter_sdk:
+    steps:
+#    - cache-pull@2.0.1: {}
+    - script@1.1.5:
+        title: Install flutter sdk
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            # fail if any commands fails
+            set -e
+            # debug log
+            set -x
+
+            cd ..
+            git clone -b master https://github.com/flutter/flutter.git
+            export PATH=`pwd`/flutter/bin:$PATH
+            envman add --key PATH --value $PATH
+
+            if [[ "$OSTYPE" == darwin* ]]; then
+              brew install --HEAD libimobiledevice
+              brew install ideviceinstaller
+              brew install ios-deploy
+            fi
+
+            flutter doctor
+
+            echo "Installed flutter to `pwd`/flutter"
+
+            echo "flutter.sdk=`pwd`/flutter" >> `pwd`/src/android/local.properties
+#    - cache-push@2.0.5:
+#        inputs:
+#        - cache_paths: |-
+#            ../flutter -> ../flutter
+  primary:
+    before_run:
+    - install_flutter_sdk
+    steps:
+#    - cache-pull@2.0.1: {}
+#    - git-clone: {}
+    - script@1.1.5:
+        title: Build
+        inputs:
+        - content: |+
+            #!/usr/bin/env bash
+            # fail if any commands fails
+            set -e
+            # debug log
+            set -x
+            echo "--------RELEASE_KEY_ALIAS-------------------------"
+            echo "RELEASE_KEY_ALIAS"
+            # write your script here
+            # flutter clean
+            # flutter packages get
+            if [[ "$OSTYPE" == darwin* ]]; then
+              flutter -v build ios -t lib/application/main_production.dart --no-codesign
+            else
+              flutter build apk -t lib/application/main_production.dart --release --flavor production
+            fi
+#    - cache-push@2.0.5:
+#        inputs:
+#        - cache_paths: |-
+#            ~/.pub-cache -> ~/.pub-cache.lock
+  deploy:
+    before_run:
+    - install_flutter_sdk
+    steps:
+#    - cache-pull@2.0.1: {}
+    - git-clone: {}
+    - script@1.1.5:
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            # fail if any commands fails
+            set -e
+            # debug log
+            set -x
+
+            if [[ "$OSTYPE" == darwin* ]]; then
+              flutter -v build ios -t lib/application/main_production.dart --no-codesign
+              cd ios
+            else
+              flutter build apk -t lib/application/main_production.dart --release --flavor production
+              cd android
+            fi
+            bundle install
+            bundle exec fastlane dg
+        title: Deploy to deploygate
+#    - cache-push@2.0.5:
+#        inputs:
+#        - cache_paths: |-
+#            ~/.pub-cache -> ~/.pub-cache.lock
